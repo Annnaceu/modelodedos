@@ -3,7 +3,7 @@ import cv2
 import mediapipe as mp
 
 mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils  # Adicionado para desenhar os marcos
+mp_drawing = mp.solutions.drawing_utils 
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.85, min_tracking_confidence=0.7)
 
 cap = cv2.VideoCapture(0)
@@ -39,13 +39,10 @@ while True:
         for hand_landmarks in results.multi_hand_landmarks:
             dedos = contar_dedos(hand_landmarks)
 
-            # Desenhar os landmarks da mão na imagem
             mp_drawing.draw_landmarks(frame, hand_landmarks)
 
-            # Exibir a contagem de dedos na tela
             cv2.putText(frame, f'Dedos levantados: {dedos}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-            # Extrair características para dados
             features = np.array([[landmark.x, landmark.y, landmark.z] for landmark in hand_landmarks.landmark]).flatten()
             data.append((features.tolist(), dedos))
 
@@ -54,7 +51,6 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Salvar os dados coletados em um arquivo
 data = np.array(data, dtype=object)
 np.save('dados_dedos.npy', data)
 
